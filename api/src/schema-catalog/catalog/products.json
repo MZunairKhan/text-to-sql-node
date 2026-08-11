@@ -1,0 +1,14 @@
+{
+  "tableName": "products",
+  "schema": "text_to_sql_node",
+  "description": "Shared product catalog. Deliberately NOT tenant-scoped in this sample dataset — modeled as a catalog shared across all tenants, which is a realistic pattern for e.g. a franchise/marketplace model where tenants sell from a common product list.",
+  "tenantScoped": false,
+  "columns": [
+    { "name": "id", "type": "uuid", "description": "Primary key", "isPrimaryKey": true },
+    { "name": "sku", "type": "text", "description": "Stock keeping unit, unique per product", "sampleValues": ["SKU-1001"] },
+    { "name": "name", "type": "text", "description": "Product name", "sampleValues": ["Espresso Blend 12oz", "Ceramic Mug"] },
+    { "name": "category", "type": "text", "description": "Product category", "sampleValues": ["beverages", "merchandise"] },
+    { "name": "unit_price_cents", "type": "integer", "description": "Current list price in cents", "sampleValues": ["1499"] }
+  ],
+  "ddl": "CREATE TABLE text_to_sql_node.products (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  sku TEXT NOT NULL UNIQUE,\n  name TEXT NOT NULL,\n  category TEXT NOT NULL,\n  unit_price_cents INTEGER NOT NULL\n);"
+}

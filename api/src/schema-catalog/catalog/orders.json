@@ -1,0 +1,16 @@
+{
+  "tableName": "orders",
+  "schema": "text_to_sql_node",
+  "description": "One row per customer order. Each order belongs to a customer and is attributed to a revenue center. order_total_cents is the authoritative order value; line-item detail lives in order_items.",
+  "tenantScoped": true,
+  "columns": [
+    { "name": "id", "type": "uuid", "description": "Primary key", "isPrimaryKey": true },
+    { "name": "tenant_id", "type": "uuid", "description": "Tenant this order belongs to" },
+    { "name": "customer_id", "type": "uuid", "description": "The customer who placed the order", "isForeignKey": "customers.id" },
+    { "name": "revenue_center_id", "type": "uuid", "description": "The revenue center the order is attributed to", "isForeignKey": "revenue_centers.id" },
+    { "name": "order_date", "type": "timestamptz", "description": "When the order was placed", "sampleValues": ["2025-06-14T18:22:00Z"] },
+    { "name": "status", "type": "text", "description": "Order lifecycle status", "sampleValues": ["pending", "fulfilled", "refunded", "cancelled"] },
+    { "name": "order_total_cents", "type": "integer", "description": "Total order value in cents (USD)", "sampleValues": ["4599", "12000"] }
+  ],
+  "ddl": "CREATE TABLE text_to_sql_node.orders (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  tenant_id UUID NOT NULL,\n  customer_id UUID NOT NULL REFERENCES text_to_sql_node.customers(id),\n  revenue_center_id UUID NOT NULL REFERENCES text_to_sql_node.revenue_centers(id),\n  order_date TIMESTAMPTZ NOT NULL DEFAULT now(),\n  status TEXT NOT NULL DEFAULT 'pending',\n  order_total_cents INTEGER NOT NULL\n);"
+}

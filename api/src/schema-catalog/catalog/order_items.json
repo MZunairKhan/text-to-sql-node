@@ -1,0 +1,14 @@
+{
+  "tableName": "order_items",
+  "schema": "text_to_sql_node",
+  "description": "Line items within an order — one row per product per order. This table has no tenant_id of its own; it is scoped transitively through orders.tenant_id via the order_id join. Flag for Phase 3: the AST guardrail needs a rule for tables scoped transitively through a joined parent, not just tables with their own tenant_id column.",
+  "tenantScoped": false,
+  "columns": [
+    { "name": "id", "type": "uuid", "description": "Primary key", "isPrimaryKey": true },
+    { "name": "order_id", "type": "uuid", "description": "The order this line item belongs to", "isForeignKey": "orders.id" },
+    { "name": "product_id", "type": "uuid", "description": "The product purchased", "isForeignKey": "products.id" },
+    { "name": "quantity", "type": "integer", "description": "Units purchased", "sampleValues": ["1", "3"] },
+    { "name": "unit_price_cents", "type": "integer", "description": "Price per unit at time of purchase, in cents", "sampleValues": ["1499"] }
+  ],
+  "ddl": "CREATE TABLE text_to_sql_node.order_items (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  order_id UUID NOT NULL REFERENCES text_to_sql_node.orders(id),\n  product_id UUID NOT NULL REFERENCES text_to_sql_node.products(id),\n  quantity INTEGER NOT NULL,\n  unit_price_cents INTEGER NOT NULL\n);"
+}

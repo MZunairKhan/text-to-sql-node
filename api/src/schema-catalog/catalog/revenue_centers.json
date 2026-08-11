@@ -1,0 +1,14 @@
+{
+  "tableName": "revenue_centers",
+  "schema": "text_to_sql_node",
+  "description": "A revenue center is a distinct business unit or location that generates revenue (e.g. a store location, a kiosk, an online channel). Every order is attributed to exactly one revenue center.",
+  "tenantScoped": true,
+  "columns": [
+    { "name": "id", "type": "uuid", "description": "Primary key", "isPrimaryKey": true },
+    { "name": "tenant_id", "type": "uuid", "description": "Tenant this revenue center belongs to" },
+    { "name": "name", "type": "text", "description": "Display name of the revenue center", "sampleValues": ["Downtown Flagship", "Airport Kiosk", "Online Store"] },
+    { "name": "region", "type": "text", "description": "Geographic region", "sampleValues": ["West", "East", "Online"] },
+    { "name": "opened_date", "type": "date", "description": "Date this revenue center opened", "sampleValues": ["2021-03-01"] }
+  ],
+  "ddl": "CREATE TABLE text_to_sql_node.revenue_centers (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  tenant_id UUID NOT NULL,\n  name TEXT NOT NULL,\n  region TEXT NOT NULL,\n  opened_date DATE NOT NULL DEFAULT CURRENT_DATE\n);"
+}

@@ -1,0 +1,15 @@
+{
+  "tableName": "customers",
+  "schema": "text_to_sql_node",
+  "description": "One row per customer account. A customer belongs to exactly one tenant (business) and can place many orders.",
+  "tenantScoped": true,
+  "columns": [
+    { "name": "id", "type": "uuid", "description": "Primary key", "isPrimaryKey": true },
+    { "name": "tenant_id", "type": "uuid", "description": "Tenant this customer belongs to" },
+    { "name": "full_name", "type": "text", "description": "Customer's full name", "sampleValues": ["Maria Gonzalez", "Wei Zhang", "Priya Patel"] },
+    { "name": "email", "type": "text", "description": "Customer's email address", "sampleValues": ["maria.g@example.com"] },
+    { "name": "signup_date", "type": "date", "description": "Date the customer created their account", "sampleValues": ["2024-03-12"] },
+    { "name": "loyalty_tier", "type": "text", "description": "Loyalty program tier", "sampleValues": ["bronze", "silver", "gold"] }
+  ],
+  "ddl": "CREATE TABLE text_to_sql_node.customers (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  tenant_id UUID NOT NULL,\n  full_name TEXT NOT NULL,\n  email TEXT NOT NULL,\n  signup_date DATE NOT NULL DEFAULT CURRENT_DATE,\n  loyalty_tier TEXT NOT NULL DEFAULT 'bronze'\n);"
+}

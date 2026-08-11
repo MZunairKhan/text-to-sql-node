@@ -5,7 +5,10 @@ services:
       - "3000:3000"
     environment:
       - DATABASE_URL=postgres://app_readonly:${APP_READONLY_PASSWORD}@db:5432/${POSTGRES_DB}
+      - DATABASE_URL_PIPELINE=postgres://app_pipeline:${APP_PIPELINE_PASSWORD}@db:5432/${POSTGRES_DB}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - VOYAGE_API_KEY=${VOYAGE_API_KEY}
+      - VOYAGE_MODEL=${VOYAGE_MODEL}
     depends_on:
       db:
         condition: service_healthy
@@ -17,6 +20,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - APP_READONLY_PASSWORD=${APP_READONLY_PASSWORD}
+      - APP_PIPELINE_PASSWORD=${APP_PIPELINE_PASSWORD}
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
