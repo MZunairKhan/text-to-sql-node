@@ -1,0 +1,12 @@
+[
+  { "query": "Show top 5 revenue centers by total sales last month", "expectedTables": ["revenue_centers", "orders"] },
+  { "query": "List all customers who signed up in 2024", "expectedTables": ["customers"] },
+  { "query": "What products are in the beverages category?", "expectedTables": ["products"] },
+  { "query": "How many orders were refunded this quarter?", "expectedTables": ["orders"] },
+  { "query": "Show gold tier customers and their total order value", "expectedTables": ["customers", "orders"] },
+  { "query": "Which revenue center sold the most cold brew concentrate?", "expectedTables": ["revenue_centers", "order_items", "products"] },
+  { "query": "List the line items for a given order, with product names", "expectedTables": ["order_items", "products"] },
+  { "query": "Average order value by loyalty tier", "expectedTables": ["orders", "customers"] },
+  { "query": "Which products have never been ordered?", "expectedTables": ["products", "order_items"] },
+  { "query": "Show all revenue centers opened after 2021", "expectedTables": ["revenue_centers"] }
+]
