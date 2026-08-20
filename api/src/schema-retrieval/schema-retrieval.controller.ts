@@ -1,9 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 import { SchemaRetrievalService } from './schema-retrieval.service';
 
 class RetrieveSchemaDto {
   query: string;
   topK?: number;
+  /** Foreign-key neighbour expansion; on by default, send false to disable. */
+  expand?: boolean;
 }
 
 /**
@@ -19,8 +21,17 @@ export class SchemaRetrievalController {
 
   @Post('query')
   async query(@Body() dto: RetrieveSchemaDto) {
-    const topK = dto.topK ?? 3;
-    const tables = await this.schemaRetrieval.retrieveRelevantTables(dto.query, topK);
-    return { query: dto.query, topK, tables };
+    const query = typeof dto?.query === 'string' ? dto.query.trim() : '';
+    if (!query) {
+      throw new BadRequestException('`query` must be a non-empty string');
+    }
+    // topK feeds a parameterized LIMIT, so this is not an injection risk,
+    // but unclamped values would error out or dump the whole table.
+    const requested = Number(dto.topK);
+    const topK = Number.isInteger(requested) ? Math.min(Math.max(requested, 1), 10) : 3;
+    const tables = await this.schemaRetrieval.retrieveRelevantTables(query, topK, {
+      expand: dto.expand !== false,
+    });
+    return { query, topK, tables };
   }
 }

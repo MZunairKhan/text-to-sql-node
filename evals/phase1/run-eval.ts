@@ -7,12 +7,18 @@
  * fine and don't mean the retriever is broken.
  *
  * Requires:
- *   - API running locally (npm run start:dev)
- *   - Embeddings populated (npm run embed:schema)
+ *   - Stack running (docker compose up), API reachable on localhost:3000
+ *   - Embeddings populated (docker compose exec api npm run embed:schema)
  *
- * Run with: npx ts-node evals/phase1/run-eval.ts
+ * Runs on the HOST, not inside the api container: evals/ lives at the repo
+ * root, outside the api/ Docker build context, so it isn't in the image.
+ * No dotenv import on purpose: from evals/ it can't resolve
+ * api/node_modules, and API_URL has a default anyway.
+ *
+ * From the repo root (PowerShell):
+ *   cd api
+ *   npx ts-node --transpile-only ../evals/phase1/run-eval.ts
  */
-import 'dotenv/config';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
@@ -39,8 +45,12 @@ async function main() {
       continue;
     }
 
-    const body = (await res.json()) as { tables: { tableName: string }[] };
+    const body = (await res.json()) as { tables: { tableName: string; source?: string }[] };
     const retrieved = body.tables.map((t) => t.tableName);
+    // * marks tables added by foreign-key expansion rather than similarity.
+    const shown = body.tables.map((t) =>
+      t.source && t.source !== 'similarity' ? `${t.tableName}*` : t.tableName,
+    );
     const missing = c.expectedTables.filter((t) => !retrieved.includes(t));
     const ok = missing.length === 0;
     if (ok) passed++;
@@ -48,12 +58,12 @@ async function main() {
     console.log(
       `${ok ? '\u2713' : '\u2717'} [${i + 1}] "${c.query}"\n` +
         `    expected: ${c.expectedTables.join(', ')}\n` +
-        `    got:      ${retrieved.join(', ')}` +
+        `    got:      ${shown.join(', ')}` +
         (ok ? '' : `\n    missing:  ${missing.join(', ')}`),
     );
   }
 
-  console.log(`\n${passed}/${cases.length} passed (see notes above on what "passed" means here)`);
+  console.log(`\n${passed}/${cases.length} passed (* = added by FK expansion, not similarity)`);
 }
 
 main().catch((err) => {

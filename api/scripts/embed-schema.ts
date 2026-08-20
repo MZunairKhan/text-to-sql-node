@@ -7,7 +7,7 @@
  *
  * Uses DATABASE_URL_PIPELINE (app_pipeline role — SELECT/INSERT/UPDATE on
  * schema_embeddings only), NOT DATABASE_URL (app_readonly — SELECT-only,
- * would fail here). See db/init/04-schema-embeddings.sql for the role.
+ * would fail here). See db/init/04-schema-embeddings.sh for the role.
  */
 import 'dotenv/config';
 import { readFileSync, readdirSync } from 'fs';
